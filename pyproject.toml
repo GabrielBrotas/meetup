@@ -10,14 +10,22 @@ dependencies = [
     "uvicorn>=0.17.6",
     "sqlalchemy>=1.4.37",
     "boto3>=1.24.14",
+    "python-dotenv>=0.20.0",
+    "psycopg2>=2.9.3",
 ]
 requires-python = ">=3.10"
 license = {text = "MIT"}
 
 [tool.pdm]
+allow_prereleases = true
+
 [tool.pdm.scripts]
 "dev:event" = "uvicorn microservices.events.server:app --reload"
 "dev:users" = "python3 ./microservices/users/server.py"
+"dev:categories" = "python3 ./microservices/categories/server.py"
+
+"prod:users" = "python3 ./server.py"
+"prod:categories" = "python3 ./server.py"
 
 [build-system]
 requires = ["pdm-pep517>=0.12.0"]

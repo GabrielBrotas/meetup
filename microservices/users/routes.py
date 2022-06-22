@@ -1,5 +1,5 @@
 from typing import Optional, Union
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 from pydantic import BaseModel # pylint: disable=no-name-in-module
 import usecases
 
@@ -24,21 +24,72 @@ class CreateUserDTO(BaseModel):
     password: str
     email: str
 
-@userRouter.post("/users")
+@userRouter.post("/users/sign-up")
 async def create_user(item: CreateUserDTO):
     try:
-        print(f'is active = {item.is_active}')
-        cc_input = CreateCategoryUseCase.Input(
-            name=item.name,
-            description=item.description,
-            is_active=item.is_active
+        create_user_use_case = usecases.CreateUserUseCase()
+
+        create_user_use_case.execute(
+            username=item.username,
+            password=item.password,
+            email=item.email,
         )
 
-#         create_category_use_case = CreateCategoryUseCase(category_repo)
+        return {"success": True}
+    except Exception as error:
+        print(error)
+        return {"success": False, "error": str(error)}
 
-#         output = create_category_use_case.execute(input_params=cc_input)
+class ConfirmEmailUserDTO(BaseModel):
+    username: str
+    confirmation_code: str
 
-#         return {"success": True, "category": output}
-#     except Exception as error: # pylint: disable=broad-except
-#         print(error)
-#         return {"success": False, "error": "somethin went wrong"}
+@userRouter.post("/users/sign-up/confirm")
+async def confirm_email(item: ConfirmEmailUserDTO):
+    try:
+        confirm_email_use_case = usecases.ConfirmEmailUseCase()
+
+        confirm_email_use_case.execute(
+            username=item.username,
+            confirmation_code=item.confirmation_code
+        )
+
+        return {"success": True}
+    except Exception as error:
+        print(error)
+        return {"success": False, "error": str(error)}
+
+
+class SignInUserDTO(BaseModel):
+    username: str
+    password: str
+
+@userRouter.post("/users/sign-in")
+async def auth_user(item: SignInUserDTO):
+    try:
+        auth_user_use_case = usecases.AuthenticateUserUseCase()
+
+        result = auth_user_use_case.execute(
+            username=item.username,
+            password=item.password,
+        )
+
+        return {"success": True, "result": result}
+    except Exception as error:
+        print(error)
+        return {"success": False, "error": str(error)}
+
+
+@userRouter.get("/users/me")
+async def get_me(authorization: Union[str, None] = Header(default=None)):
+    try:
+        get_auth_user_use_case = usecases.GetAuthUserUseCase()
+
+        result = get_auth_user_use_case.execute(
+            access_token=authorization
+        )
+
+        return {"success": True, "result": result}
+    except Exception as error:
+        print(error)
+        return {"success": False, "error": str(error)}

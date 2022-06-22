@@ -3,7 +3,9 @@ FROM python:3.10.2-slim
 RUN apt update && apt install -y --no-install-recommends \
     default-jre \
     git \
-    graphviz
+    python3-dev \
+    build-essential \
+    libpq-dev
 
 RUN useradd -ms /bin/bash python
 

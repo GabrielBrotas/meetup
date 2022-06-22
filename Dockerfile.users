@@ -1,0 +1,24 @@
+FROM python:3.10.2-slim
+
+RUN apt update
+
+RUN useradd -ms /bin/bash python
+
+RUN pip install pdm pdm-venv
+
+USER python
+
+WORKDIR /home/python/app
+RUN echo 'eval "$(pdm --pep582)"' >> ~/.bashrc
+
+COPY pyproject.toml .
+
+RUN pdm install
+
+COPY ./microservices/users .
+
+EXPOSE 4000
+
+CMD [ "tail", "-f", "/dev/null" ]
+
+ENTRYPOINT ["pdm", "run", "prod:users"]

@@ -6,3 +6,5 @@ __pypackages__/*
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+
+.docker/*
