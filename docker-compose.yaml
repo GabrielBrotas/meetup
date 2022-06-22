@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    container_name: microservices
+    volumes:
+      - .:/home/python/app
+    ports:
+      - 4000:4000
+  
+  # db:
+  #   container_name: postgres
+  #   image: postgres:14.2-alpine
+  #   restart: always
+  #   tty: true 
+  #   ports:
+  #     - '5432:5432'
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=events-svc
+  #   volumes:
+  #     - ./docker/db:/var/lib/postgresql/data
