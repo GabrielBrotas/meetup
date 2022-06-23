@@ -28,6 +28,12 @@ Temp Email Software to create a new account:
 https://temp-mail.org/en
 
 
+3 - Create Kafka topics
+```bash
+# open localhost:9021
+# create a topic called category.renamed
+
+```
 ## Next Steps:
 - Pagination
 - Dockerfile multistage build

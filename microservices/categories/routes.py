@@ -1,9 +1,9 @@
-from typing import Optional, Union
 from fastapi import APIRouter, Header, Depends, status, Response
 from pydantic import BaseModel
-import usecases
 from sqlalchemy.orm import Session
+import usecases
 import database
+import eventing
 
 categoriesRouter = APIRouter(
     tags=["category"]
@@ -39,6 +39,24 @@ async def create_category(item: CreateCategoryDTO, db: Session = Depends(databas
         print(error)
         return {"success": False, "error": str(error)}
 
+# TODO: verify if the user is admin
+@categoriesRouter.put("/category/{category_id}")
+async def update_category(category_id: int, item: CreateCategoryDTO, db: Session = Depends(database.get_db)):
+    try:
+        producer = eventing.Producer()
+        category_eventing = eventing.CategoryEvents(producer)
+
+        update_category_use_case = usecases.UpdateCategoryNameUseCase(db, category_eventing)
+
+        update_category_use_case.execute(
+            category_id=category_id,
+            name=item.name
+        )
+
+        return {"success": True}
+    except Exception as error:
+        print(error)
+        return {"success": False, "error": str(error)}
 
 @categoriesRouter.get("/category/{category_id}")
 async def get_category(category_id: int, response: Response, db: Session = Depends(database.get_db)):

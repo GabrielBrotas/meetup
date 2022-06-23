@@ -5,7 +5,8 @@ RUN apt update && apt install -y --no-install-recommends \
     git \
     python3-dev \
     build-essential \
-    libpq-dev
+    libpq-dev \
+    tk
 
 RUN useradd -ms /bin/bash python
 

@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-import routes
 import uvicorn
+import threading
 
+import routes
 import database
+import eventing
 
 app = FastAPI()
 app.include_router(routes.meetingsRouter)
@@ -14,4 +16,7 @@ async def health_check():
 if __name__ == "__main__":
     conn = database.create_server_connection()
     database.create_tables(conn)
+
+    pool = threading.Thread(target=eventing.listen_events)
+    pool.start()
     uvicorn.run(app, host="0.0.0.0", port=4002)
