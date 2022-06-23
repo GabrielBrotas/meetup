@@ -1,5 +1,5 @@
 from typing import Optional, Union
-from fastapi import APIRouter, Header, Depends
+from fastapi import APIRouter, Header, Depends, status, Response
 from pydantic import BaseModel
 import usecases
 from sqlalchemy.orm import Session
@@ -41,7 +41,7 @@ async def create_category(item: CreateCategoryDTO, db: Session = Depends(databas
 
 
 @categoriesRouter.get("/category/{category_id}")
-async def get_category(category_id: int, db: Session = Depends(database.get_db)):
+async def get_category(category_id: int, response: Response, db: Session = Depends(database.get_db)):
     try:
         get_category_use_case = usecases.GetCategoryByIdUseCase(db)
 
@@ -49,7 +49,11 @@ async def get_category(category_id: int, db: Session = Depends(database.get_db))
             category_id=category_id
         )
 
+        if result == None:
+            raise Exception("Category with id: {} not found".format(category_id))
+
         return {"success": True, "category": result}
     except Exception as error:
         print(error)
+        response.status_code = status.HTTP_404_NOT_FOUND
         return {"success": False, "error": str(error)}

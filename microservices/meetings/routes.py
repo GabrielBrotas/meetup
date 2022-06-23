@@ -1,55 +1,89 @@
-from typing import Optional, Union
-from fastapi import APIRouter, Header, Depends
+from datetime import datetime
+from typing import List
+from fastapi import APIRouter, status, Response
 from pydantic import BaseModel
 import usecases
-from sqlalchemy.orm import Session
 import database
 
-categoriesRouter = APIRouter(
-    tags=["category"]
+meetingsRouter = APIRouter(
+    tags=["meeting"]
 )
 
-@categoriesRouter.get("/categories")
-async def list_categories(db: Session = Depends(database.get_db)):
+@meetingsRouter.get("/meetings")
+async def list_meetings():
     try:
-        list_categories_use_case = usecases.ListCategoriesUseCase(db)
+        conn = database.create_server_connection()
+        list_meetings_use_case = usecases.ListMeetingsUseCase(conn)
 
-        categories = list_categories_use_case.execute()
-
-        return {"success": True, "categories": categories}
+        meetings = list_meetings_use_case.execute()
+        conn.close()
+        return {"success": True, "meetings": meetings}
     except Exception as error:
         print(error)
         return {"success": False, "error": str(error)}
 
-class CreateCategoryDTO(BaseModel):
+class CreateMeetingDTO(BaseModel):
     name: str
+    category_id: int
+    participants_username: List[str]
+    duration_min: int
+    date: datetime
 
 # TODO: verify if the user is admin
-@categoriesRouter.post("/category")
-async def create_category(item: CreateCategoryDTO, db: Session = Depends(database.get_db)):
+@meetingsRouter.post("/meeting")
+async def create_meeting(item: CreateMeetingDTO,  response: Response, ):
     try:
-        create_category_use_case = usecases.CreateCategoryUseCase(db)
+        conn = database.create_server_connection()
 
-        create_category_use_case.execute(
-            name=item.name
+        create_meeting_use_case = usecases.CreateMeetingUseCase(conn)
+
+        create_meeting_use_case.execute(
+            input_params=item
         )
+        conn.close()
 
         return {"success": True}
     except Exception as error:
         print(error)
+        response.status_code = status.HTTP_400_BAD_REQUEST
         return {"success": False, "error": str(error)}
 
 
-@categoriesRouter.get("/category/{category_id}")
-async def get_category(category_id: int, db: Session = Depends(database.get_db)):
+@meetingsRouter.get("/meeting/{meeting_id}")
+async def get_meeting(meeting_id: int, ):
     try:
-        get_category_use_case = usecases.GetCategoryByIdUseCase(db)
+        conn = database.create_server_connection()
 
-        result = get_category_use_case.execute(
-            category_id=category_id
+        get_meeting_use_case = usecases.GetMeetingByIdUseCase(conn)
+
+        result = get_meeting_use_case.execute(
+            meeting_id=meeting_id
         )
+        conn.close()
 
-        return {"success": True, "category": result}
+        return {"success": True, "meeting": result}
     except Exception as error:
         print(error)
+        return {"success": False, "error": str(error)}
+class EnrollMeetingDTO(BaseModel):
+    username: str
+
+# TODO: get user name from heades
+@meetingsRouter.post("/meeting/{meeting_id}/enroll")
+async def create_meeting(meeting_id: int, item: EnrollMeetingDTO,response: Response):
+    try:
+        conn = database.create_server_connection()
+
+        enroll_meeting_use_case = usecases.EnrollMeetingUseCase(conn)
+
+        enroll_meeting_use_case.execute(
+            meeting_id=meeting_id,
+            username=item.username
+        )
+
+        conn.close()
+        return {"success": True}
+    except Exception as error:
+        print(error)
+        response.status_code = status.HTTP_400_BAD_REQUEST
         return {"success": False, "error": str(error)}

@@ -11,6 +11,8 @@ services:
       - ~/.aws:/home/python/.aws
     networks:
         - postgres_network
+        - postgres_meeting_network
+        - microservices
 
   # users:
   #   build:
@@ -51,8 +53,47 @@ services:
       - ~/.aws:/usr/.aws
     networks:
       - postgres_network
+      - microservices
     command: sh -c "dockerize -wait tcp://categories-db:5432 -timeout 30s -wait-retry-interval 3s python3 project/server.py"
 
+  meetings-db:
+    image: postgres:14.2-alpine
+    container_name: meetings-postgres
+    restart: always
+    tty: true 
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=meetup-meetings
+    # volumes:
+    #   - .docker/mdb:/var/lib/postgresql/data
+    networks:
+      - postgres_meeting_network
+
+  # meetings:
+  #   depends_on:
+  #     - meetings-db
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.meetings
+  #   container_name: meetings-svc
+  #   ports:
+  #     - 4002:4002
+  #   volumes:
+  #     - ~/.aws:/usr/.aws
+  #   networks:
+  #     - postgres_meeting_network
+  #     - microservices
+  #   command: sh -c "dockerize -wait tcp://meetings-db:5432 -timeout 30s -wait-retry-interval 3s python3 project/server.py"
+
 networks:
+  microservices:
+    driver: bridge
+
   postgres_network:
+    driver: bridge
+  
+  postgres_meeting_network:
     driver: bridge

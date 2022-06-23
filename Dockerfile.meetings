@@ -1,0 +1,32 @@
+# build stage
+FROM python:3.10.2-slim AS builder
+
+RUN apt update && apt install -y --no-install-recommends \
+    python3-dev \
+    build-essential \
+    libpq-dev
+
+RUN apt install wget -y
+
+# install PDM
+RUN pip install -U pip setuptools wheel
+RUN pip install pdm
+
+# copy files
+COPY pyproject.toml pdm.lock /usr/src/app/
+COPY ./microservices/meetings/ /usr/src/app/project
+
+WORKDIR /usr/src/app
+
+RUN pdm install --prod --no-lock --no-editable
+
+ENV MY_PYTHON_PACKAGES=./__pypackages__/3.10
+ENV PYTHONPATH=./__pypackages__/3.10/lib
+ENV PATH $PATH:${MY_PYTHON_PACKAGES}/bin
+
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
+CMD [ "python3", "project/server.py" ]

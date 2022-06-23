@@ -20,14 +20,14 @@ version = "1.24.14"
 requires_python = ">= 3.7"
 summary = "The AWS SDK for Python"
 dependencies = [
-    "botocore<1.28.0,>=1.27.14",
+    "botocore<1.28.0,>=1.27.15",
     "jmespath<2.0.0,>=0.7.1",
     "s3transfer<0.7.0,>=0.6.0",
 ]
 
 [[package]]
 name = "botocore"
-version = "1.27.14"
+version = "1.27.15"
 requires_python = ">= 3.7"
 summary = "Low-level, data-driven core of boto 3."
 dependencies = [
@@ -35,6 +35,18 @@ dependencies = [
     "python-dateutil<3.0.0,>=2.1",
     "urllib3<1.27,>=1.25.4",
 ]
+
+[[package]]
+name = "certifi"
+version = "2022.6.15"
+requires_python = ">=3.6"
+summary = "Python package for providing Mozilla's CA Bundle."
+
+[[package]]
+name = "charset-normalizer"
+version = "2.0.12"
+requires_python = ">=3.5.0"
+summary = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
 
 [[package]]
 name = "click"
@@ -86,6 +98,20 @@ requires_python = ">=3.7"
 summary = "JSON Matching Expressions"
 
 [[package]]
+name = "mysql-connector-python"
+version = "8.0.29"
+summary = "MySQL driver written in Python"
+dependencies = [
+    "protobuf>=3.0.0",
+]
+
+[[package]]
+name = "protobuf"
+version = "4.21.1"
+requires_python = ">=3.7"
+summary = ""
+
+[[package]]
 name = "psycopg2"
 version = "2.9.3"
 requires_python = ">=3.6"
@@ -114,6 +140,18 @@ name = "python-dotenv"
 version = "0.20.0"
 requires_python = ">=3.5"
 summary = "Read key-value pairs from a .env file and set them as environment variables"
+
+[[package]]
+name = "requests"
+version = "2.28.0"
+requires_python = ">=3.7, <4"
+summary = "Python HTTP for Humans."
+dependencies = [
+    "certifi>=2017.4.17",
+    "charset-normalizer~=2.0.0",
+    "idna<4,>=2.5",
+    "urllib3<1.27,>=1.21.1",
+]
 
 [[package]]
 name = "s3transfer"
@@ -172,14 +210,13 @@ version = "0.17.6"
 requires_python = ">=3.7"
 summary = "The lightning-fast ASGI server."
 dependencies = [
-    "asgiref>=3.4.0",
     "click>=7.0",
     "h11>=0.8",
 ]
 
 [metadata]
 lock_version = "3.1"
-content_hash = "sha256:4b9dc790eadc1dc33c7b1b367484884ab8a531bf3c29d4d2debea460562f5505"
+content_hash = "sha256:e33bb9010d82c3ab1e6a11c4b98a3b151d6135f985cd804d2027966c8db65c5f"
 
 [metadata.files]
 "anyio 3.6.1" = [
@@ -194,8 +231,17 @@ content_hash = "sha256:4b9dc790eadc1dc33c7b1b367484884ab8a531bf3c29d4d2debea4605
     {file = "boto3-1.24.14-py3-none-any.whl", hash = "sha256:490f5e88f5551b33ae3019a37412158b76426d63d1fb910968ade9b6a024e5fe"},
     {file = "boto3-1.24.14.tar.gz", hash = "sha256:e284705da36faa668c715ae1f74ebbff4320dbfbe3a733df3a8ab076d1ed1226"},
 ]
-"botocore 1.27.14" = [
-    {file = "botocore-1.27.14-py3-none-any.whl", hash = "sha256:df1e9b208ff93daac7c645b0b04fb6dccd7f20262eae24d87941727025cbeece"},
+"botocore 1.27.15" = [
+    {file = "botocore-1.27.15-py3-none-any.whl", hash = "sha256:aaa019265dfea61c5355a207b14283161002d4d94e0eb85194dd04f3bdba48be"},
+    {file = "botocore-1.27.15.tar.gz", hash = "sha256:3799d5c8642b29b347418eb26d42e541d0dc24faa5e62bc8b3812722ab2bf139"},
+]
+"certifi 2022.6.15" = [
+    {file = "certifi-2022.6.15-py3-none-any.whl", hash = "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"},
+    {file = "certifi-2022.6.15.tar.gz", hash = "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d"},
+]
+"charset-normalizer 2.0.12" = [
+    {file = "charset_normalizer-2.0.12-py3-none-any.whl", hash = "sha256:6881edbebdb17b39b4eaaa821b438bf6eddffb4468cf344f09f89def34a8b1df"},
+    {file = "charset-normalizer-2.0.12.tar.gz", hash = "sha256:2857e29ff0d34db842cd7ca3230549d1a697f96ee6d3fb071cfa6c7393832597"},
 ]
 "click 8.1.3" = [
     {file = "click-8.1.3-py3-none-any.whl", hash = "sha256:bb4d8133cb15a609f44e8213d9b391b0809795062913b383c62be0ee95b1db48"},
@@ -278,6 +324,42 @@ content_hash = "sha256:4b9dc790eadc1dc33c7b1b367484884ab8a531bf3c29d4d2debea4605
     {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
     {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
 ]
+"mysql-connector-python 8.0.29" = [
+    {file = "mysql_connector_python-8.0.29-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:bed43ea3a11f8d4e7c2e3f20c891214e68b45451314f91fddf9ca701de7a53ac"},
+    {file = "mysql_connector_python-8.0.29-cp310-cp310-manylinux1_i686.whl", hash = "sha256:6e2267ad75b37b5e1c480cde77cdc4f795427a54266ead30aabcdbf75ac70064"},
+    {file = "mysql_connector_python-8.0.29-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:d5afb766b379111942d4260f29499f93355823c7241926471d843c9281fe477c"},
+    {file = "mysql_connector_python-8.0.29-cp310-cp310-win_amd64.whl", hash = "sha256:4de5959e27038cbd11dfccb1afaa2fd258c013e59d3e15709dd1992086103050"},
+    {file = "mysql_connector_python-8.0.29-cp37-cp37m-macosx_11_0_x86_64.whl", hash = "sha256:895135cde57622edf48e1fce3beb4ed85f18332430d48f5c1d9630d49f7712b0"},
+    {file = "mysql_connector_python-8.0.29-cp37-cp37m-manylinux1_i686.whl", hash = "sha256:fdd262d8538aa504475f8860cfda939a297d3b213c8d15f7ceed52508aeb2aa3"},
+    {file = "mysql_connector_python-8.0.29-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:89597c091c4f25b6e023cbbcd32be73affbb0b44256761fe3b8e1d4b14d14d02"},
+    {file = "mysql_connector_python-8.0.29-cp37-cp37m-win_amd64.whl", hash = "sha256:ab0e9d9b5fc114b78dfa9c74e8bfa30b48fcfa17dbb9241ad6faada08a589900"},
+    {file = "mysql_connector_python-8.0.29-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:245087999f081b389d66621f2abfe2463e3927f63c7c4c0f70ce0f82786ccb93"},
+    {file = "mysql_connector_python-8.0.29-cp38-cp38-manylinux1_i686.whl", hash = "sha256:5eef51e48b22aadd633563bbdaf02112d98d954a4ead53f72fde283ea3f88152"},
+    {file = "mysql_connector_python-8.0.29-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:b7dccd7f72f19c97b58428ebf8e709e24eb7e9b67a408af7e77b60efde44bea4"},
+    {file = "mysql_connector_python-8.0.29-cp38-cp38-win_amd64.whl", hash = "sha256:7be3aeff73b85eab3af2a1e80c053a98cbcb99e142192e551ebd4c1e41ce2596"},
+    {file = "mysql_connector_python-8.0.29-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:a7fd6a71df824f5a7d9a94060598d67b3a32eeccdc9837ee2cd98a44e2536cae"},
+    {file = "mysql_connector_python-8.0.29-cp39-cp39-manylinux1_i686.whl", hash = "sha256:fd608c288f596c4c8767d9a8e90f129385bd19ee6e3adaf6974ad8012c6138b8"},
+    {file = "mysql_connector_python-8.0.29-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:f353893481476a537cca7afd4e81e0ed84dd2173932b7f1721ab3e3351cbf324"},
+    {file = "mysql_connector_python-8.0.29-cp39-cp39-win_amd64.whl", hash = "sha256:1bef2a4a2b529c6e9c46414100ab7032c252244e8a9e017d2b6a41bb9cea9312"},
+    {file = "mysql_connector_python-8.0.29-py2.py3-none-any.whl", hash = "sha256:047420715bbb51d3cba78de446c8a6db4666459cd23e168568009c620a3f5b90"},
+    {file = "mysql-connector-python-8.0.29.tar.gz", hash = "sha256:29ec05ded856b4da4e47239f38489c03b31673ae0f46a090d0e4e29c670e6181"},
+]
+"protobuf 4.21.1" = [
+    {file = "protobuf-4.21.1-cp310-abi3-win32.whl", hash = "sha256:52c1e44e25f2949be7ffa7c66acbfea940b0945dd416920231f7cb30ea5ac6db"},
+    {file = "protobuf-4.21.1-cp310-abi3-win_amd64.whl", hash = "sha256:72d357cc4d834cc85bd957e8b8e1f4b64c2eac9ca1a942efeb8eb2e723fca852"},
+    {file = "protobuf-4.21.1-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:3767c64593a49c7ac0accd08ed39ce42744405f0989d468f0097a17496fdbe84"},
+    {file = "protobuf-4.21.1-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:0d4719e724472e296062ba8e82a36d64693fcfdb550d9dff98af70ca79eafe3d"},
+    {file = "protobuf-4.21.1-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:a4c0c6f2f95a559e59a0258d3e4b186f340cbdc5adec5ce1bc06d01972527c88"},
+    {file = "protobuf-4.21.1-cp37-cp37m-win32.whl", hash = "sha256:32fff501b6df3050936d1839b80ea5899bf34db24792d223d7640611f67de15a"},
+    {file = "protobuf-4.21.1-cp37-cp37m-win_amd64.whl", hash = "sha256:b3d7d4b4945fe3c001403b6c24442901a5e58c0a3059290f5a63523ed4435f82"},
+    {file = "protobuf-4.21.1-cp38-cp38-win32.whl", hash = "sha256:34400fd76f85bdae9a2e9c1444ea4699c0280962423eff4418765deceebd81b5"},
+    {file = "protobuf-4.21.1-cp38-cp38-win_amd64.whl", hash = "sha256:c8829092c5aeb61619161269b2f8a2e36fd7cb26abbd9282d3bc453f02769146"},
+    {file = "protobuf-4.21.1-cp39-cp39-win32.whl", hash = "sha256:2b35602cb65d53c168c104469e714bf68670335044c38eee3c899d6a8af03ffc"},
+    {file = "protobuf-4.21.1-cp39-cp39-win_amd64.whl", hash = "sha256:3f2ed842e8ca43b790cb4a101bcf577226e0ded98a6a6ba2d5e12095a08dc4da"},
+    {file = "protobuf-4.21.1-py2.py3-none-any.whl", hash = "sha256:b309fda192850ac4184ca1777aab9655564bc8d10a9cc98f10e1c8bf11295c22"},
+    {file = "protobuf-4.21.1-py3-none-any.whl", hash = "sha256:79cd8d0a269b714f6b32641f86928c718e8d234466919b3f552bfb069dbb159b"},
+    {file = "protobuf-4.21.1.tar.gz", hash = "sha256:5d9b5c8270461706973c3871c6fbdd236b51dfe9dab652f1fb6a36aa88287e47"},
+]
 "psycopg2 2.9.3" = [
     {file = "psycopg2-2.9.3-cp310-cp310-win32.whl", hash = "sha256:083707a696e5e1c330af2508d8fab36f9700b26621ccbcb538abe22e15485362"},
     {file = "psycopg2-2.9.3-cp310-cp310-win_amd64.whl", hash = "sha256:d3ca6421b942f60c008f81a3541e8faf6865a28d5a9b48544b0ee4f40cac7fca"},
@@ -335,6 +417,10 @@ content_hash = "sha256:4b9dc790eadc1dc33c7b1b367484884ab8a531bf3c29d4d2debea4605
 "python-dotenv 0.20.0" = [
     {file = "python_dotenv-0.20.0-py3-none-any.whl", hash = "sha256:d92a187be61fe482e4fd675b6d52200e7be63a12b724abbf931a40ce4fa92938"},
     {file = "python-dotenv-0.20.0.tar.gz", hash = "sha256:b7e3b04a59693c42c36f9ab1cc2acc46fa5df8c78e178fc33a8d4cd05c8d498f"},
+]
+"requests 2.28.0" = [
+    {file = "requests-2.28.0-py3-none-any.whl", hash = "sha256:bc7861137fbce630f17b03d3ad02ad0bf978c844f3536d0edda6499dafce2b6f"},
+    {file = "requests-2.28.0.tar.gz", hash = "sha256:d568723a7ebd25875d8d1eaf5dfa068cd2fc8194b2e483d7b1f7c81918dbec6b"},
 ]
 "s3transfer 0.6.0" = [
     {file = "s3transfer-0.6.0-py3-none-any.whl", hash = "sha256:06176b74f3a15f61f1b4f25a1fc29a4429040b7647133a463da8fa5bd28d5ecd"},
