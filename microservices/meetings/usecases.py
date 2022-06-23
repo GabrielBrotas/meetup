@@ -24,7 +24,7 @@ class CreateMeetingUseCase:
     conn: Any
 
     def execute(self, input_params: 'Input') -> None:
-        category_api_url = os.getenv("CATAGEORY_API_URL")
+        category_api_url = os.getenv("CATEGORY_API_URL")
 
         category_response = requests.get(category_api_url + "/category/{}".format(input_params.category_id)).json()
         

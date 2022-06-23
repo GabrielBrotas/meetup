@@ -20,20 +20,16 @@ echo "$(aws_data)" > ~/.aws/credentials
 cat ~/.aws/credentials # verify if settings are correct
 ```
 
-2 - Create Container
+2 - Set up the containers
 ```bash
 docker-compose up -d --build
 ```
+
+## Prod
 Temp Email Software to create a new account: 
 https://temp-mail.org/en
 
 
-3 - Create Kafka topics
-```bash
-# open localhost:9021
-# create a topic called category.renamed
-
-```
 ## Next Steps:
 - Pagination
 - Dockerfile multistage build
