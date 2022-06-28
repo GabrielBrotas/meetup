@@ -71,6 +71,11 @@ output "private_database_subnets" {
   value       = module.vpc.database_subnets
 }
 
+output "database_subnet_group_name" {
+  description = "Database subnet group name"
+  value       = module.vpc.database_subnet_group_name
+}
+
 output "nat_public_ips" {
   description = "List of public Elastic IPs created for AWS NAT Gateway"
   value       = module.vpc.nat_public_ips

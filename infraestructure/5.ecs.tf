@@ -7,6 +7,35 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   }
 }
 
+data "aws_iam_policy_document" "cognito_policy" {
+  statement {
+    actions = [
+        "cognito-idp:ForgotPassword",
+        "cognito-idp:GlobalSignOut",
+        "cognito-idp:GetUser",
+        "cognito-idp:ConfirmSignUp",
+        "cognito-idp:UpdateUserAttributes",
+        "cognito-idp:SignUp",
+        "cognito-idp:VerifyUserAttribute",
+        "cognito-idp:ListUserPools",
+        "cognito-idp:InitiateAuth",
+        "cognito-idp:DeleteUser",
+        "cognito-idp:ConfirmDevice",
+        "cognito-idp:ListUsersInGroup",
+        "cognito-idp:ListGroups",
+        "cognito-idp:AdminCreateUser",
+        "cognito-idp:UpdateGroup",
+        "cognito-idp:CreateGroup",
+        "cognito-idp:UpdateUserPoolClient",
+        "cognito-idp:GetGroup",
+        "cognito-idp:UpdateUserPool",
+        "cognito-idp:ListUserPoolClients",
+        "cognito-idp:ListUsers"
+    ]
+
+    resources = ["*"]
+  }
+}
 
 resource "aws_iam_role" "ecs_task_role" {
     name = "${var.project_name}-ecs-api-role"
@@ -27,6 +56,10 @@ resource "aws_iam_role" "ecs_task_role" {
   ]
 }
 EOF
+    inline_policy {
+        name   = "policy-cognito"
+        policy = data.aws_iam_policy_document.cognito_policy.json
+    }
 }
 
 resource "aws_iam_policy" "ecs_api_policy" {
@@ -106,6 +139,10 @@ resource "aws_ecs_task_definition" "ecs_users_task_definition" {
 }
 
 resource "aws_ecs_task_definition" "ecs_categories_task_definition" {
+    depends_on = [
+      aws_db_instance.categories
+    ]
+
     family = "${var.project_name}-ecs-categories-td"
     requires_compatibilities = ["FARGATE"]
     network_mode = "awsvpc"
@@ -127,6 +164,10 @@ resource "aws_ecs_task_definition" "ecs_categories_task_definition" {
                 {
                     "name" = "ENVIRONMENT",
                     "value" = "prod",
+                },
+                {
+                    "name" = "SQLALCHEMY_DATABASE_URL",
+                    "value" = "postgresql://postgres:postgres123@${aws_db_instance.categories.endpoint}/${aws_db_instance.categories.db_name}",
                 }
             ]
         }
@@ -134,6 +175,10 @@ resource "aws_ecs_task_definition" "ecs_categories_task_definition" {
 }
 
 resource "aws_ecs_task_definition" "ecs_meetings_task_definition" {
+    depends_on = [
+      aws_db_instance.meetings
+    ]
+
     family = "${var.project_name}-ecs-meetings-td"
     requires_compatibilities = ["FARGATE"]
     network_mode = "awsvpc"
@@ -155,6 +200,26 @@ resource "aws_ecs_task_definition" "ecs_meetings_task_definition" {
                 {
                     "name" = "ENVIRONMENT",
                     "value" = "prod",
+                },
+                {
+                    "name" = "POSTGRES_HOST",
+                    "value" = "${aws_db_instance.meetings.endpoint}"
+                },
+                {
+                    "name" = "POSTGRES_DATABASE",
+                    "value" = "${aws_db_instance.meetings.db_name}"
+                },
+                {
+                    "name" = "POSTGRES_USER",
+                    "value" = "postgres"
+                },
+                {
+                    "name" = "POSTGRES_PASSWORD",
+                    "value" = "postgres123"
+                },
+                {
+                    "name" = "POSTGRES_PORT",
+                    "value" = "5432"
                 }
             ]
         }
@@ -204,7 +269,7 @@ resource "aws_ecs_service" "users_ecs_service" {
     name = "${var.project_name}-ecs-users-service"
     cluster = aws_ecs_cluster.ecs_cluster.id
     task_definition = aws_ecs_task_definition.ecs_users_task_definition.arn
-    desired_count = 3
+    desired_count = 1
     health_check_grace_period_seconds = 20
     launch_type = "FARGATE"
     deployment_minimum_healthy_percent = 100
@@ -218,12 +283,65 @@ resource "aws_ecs_service" "users_ecs_service" {
     }
 
     load_balancer {
-        target_group_arn = aws_lb_target_group.api_target_group.arn
+        target_group_arn = aws_lb_target_group.users_tg.arn
         container_name = "${var.project_name}-users"
         container_port = 4000
     }
 }
 
+resource "aws_ecs_service" "categories_ecs_service" {
+    name = "${var.project_name}-ecs-categories-service"
+    cluster = aws_ecs_cluster.ecs_cluster.id
+    task_definition = aws_ecs_task_definition.ecs_categories_task_definition.arn
+    desired_count = 1
+    health_check_grace_period_seconds = 20
+    launch_type = "FARGATE"
+    deployment_minimum_healthy_percent = 100
+    deployment_maximum_percent = 200
+    scheduling_strategy = "REPLICA"
+
+    network_configuration {
+        subnets = module.vpc.private_subnets
+        security_groups = [aws_security_group.api_app_sg.id]
+        # assign_public_ip = true
+    }
+
+    load_balancer {
+        target_group_arn = aws_lb_target_group.categories_tg.arn
+        container_name = "${var.project_name}-categories"
+        container_port = 4001
+    }
+}
+
+resource "aws_ecs_service" "meetings_ecs_service" {
+    name = "${var.project_name}-ecs-meetings-service"
+    cluster = aws_ecs_cluster.ecs_cluster.id
+    task_definition = aws_ecs_task_definition.ecs_meetings_task_definition.arn
+    desired_count = 1
+    health_check_grace_period_seconds = 20
+    launch_type = "FARGATE"
+    deployment_minimum_healthy_percent = 100
+    deployment_maximum_percent = 200
+    scheduling_strategy = "REPLICA"
+
+    network_configuration {
+        subnets = module.vpc.private_subnets
+        security_groups = [aws_security_group.api_app_sg.id]
+        # assign_public_ip = true
+    }
+
+    load_balancer {
+        target_group_arn = aws_lb_target_group.meetings_tg.arn
+        container_name = "${var.project_name}-meetings"
+        container_port = 4002
+    }
+}
+
 output "ecs_cluster_id" {
     value = aws_ecs_cluster.ecs_cluster.id
+}
+
+output "api_app_sg" {
+    description = "Api's security group"
+    value = aws_security_group.api_alb_sg.id
 }
