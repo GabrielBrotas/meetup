@@ -133,14 +133,27 @@ resource "aws_ecs_task_definition" "ecs_users_task_definition" {
                     "name" = "COGNITO_APP_CLIENT_ID",
                     "value" = "${aws_cognito_user_pool_client.client.id}",
                 }
-            ]
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/${var.project_name}-ecs-users-td",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
         }
     ])
 }
 
+resource "aws_cloudwatch_log_group" "users-group" {
+  name = "/ecs/${var.project_name}-ecs-users-td"
+}
+
 resource "aws_ecs_task_definition" "ecs_categories_task_definition" {
     depends_on = [
-      aws_db_instance.categories
+      aws_db_instance.categories,
+      aws_ecr_repository.categories_api
     ]
 
     family = "${var.project_name}-ecs-categories-td"
@@ -169,14 +182,27 @@ resource "aws_ecs_task_definition" "ecs_categories_task_definition" {
                     "name" = "SQLALCHEMY_DATABASE_URL",
                     "value" = "postgresql://postgres:postgres123@${aws_db_instance.categories.endpoint}/${aws_db_instance.categories.db_name}",
                 }
-            ]
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/${var.project_name}-ecs-categories-td",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
         }
     ])
 }
 
+resource "aws_cloudwatch_log_group" "categories-group" {
+  name = "/ecs/${var.project_name}-ecs-categories-td"
+}
+
 resource "aws_ecs_task_definition" "ecs_meetings_task_definition" {
     depends_on = [
-      aws_db_instance.meetings
+      aws_db_instance.meetings,
+      aws_ecr_repository.meetings_api
     ]
 
     family = "${var.project_name}-ecs-meetings-td"
@@ -220,10 +246,26 @@ resource "aws_ecs_task_definition" "ecs_meetings_task_definition" {
                 {
                     "name" = "POSTGRES_PORT",
                     "value" = "5432"
+                },
+                {
+                    "name" = "CATEGORY_API_URL",
+                    "value" = "http://${aws_lb.api_alb.dns_name}:4001"
                 }
-            ]
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/${var.project_name}-ecs-meetings-td",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
         }
     ])
+}
+
+resource "aws_cloudwatch_log_group" "meetings-group" {
+  name = "/ecs/${var.project_name}-ecs-meetings-td"
 }
 
 resource "aws_security_group" "api_app_sg" {

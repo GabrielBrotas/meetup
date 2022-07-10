@@ -151,6 +151,7 @@ output "categories_tg" {
 output "meetings_tg" {
     value = aws_lb_target_group.meetings_tg.arn
 }
+
 output "api_dns" {
     value = aws_lb.api_alb.dns_name
 }
